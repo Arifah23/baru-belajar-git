@@ -3,9 +3,17 @@ import pickle
 
 # Fungsi untuk memuat model dari file
 def load_model(filename):
-    with open(filename, 'rb') as file:
-        model = pickle.load(file)
-    return model
+    try:
+        with open(filename, 'rb') as file:
+            model = pickle.load(file)
+        return model
+    except FileNotFoundError:
+        st.error(f"File {filename} tidak ditemukan.")
+    except pickle.PickleError:
+        st.error("Terjadi kesalahan saat memuat file pickle.")
+    except Exception as e:
+        st.error(f"Kesalahan tak terduga: {e}")
+    return None
 
 # Muat model Random Forest yang telah disimpan
 model_filename = 'RF_Restaurant.sav'
