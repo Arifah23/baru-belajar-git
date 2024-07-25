@@ -25,13 +25,19 @@ def predict_profitability(features):
         st.error("Model tidak dimuat. Tidak dapat melakukan prediksi.")
         return None
     try:
+        # Melakukan prediksi dengan model
         profitability_prediction = random_forest_model.predict([features])
+        
+        # Menentukan kategori profitabilitas berdasarkan prediksi
         if profitability_prediction[0] == 0:
             return 'low'
         elif profitability_prediction[0] == 1:
             return 'medium'
-        else:
+        elif profitability_prediction[0] == 2:
             return 'high'
+        else:
+            st.error("Kategori profitabilitas tidak valid.")
+            return None
     except Exception as e:
         st.error(f"Kesalahan saat melakukan prediksi: {e}")
         return None
