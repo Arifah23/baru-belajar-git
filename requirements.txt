@@ -1,6 +1,0 @@
-pandas==2.2.2
-ast
-pickle
-streamlit
-scikit-learn
-pip==24.0

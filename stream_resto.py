@@ -21,18 +21,20 @@ random_forest_model = load_model(model_filename)
 
 # Fungsi untuk melakukan prediksi dan menentukan kategori profitabilitas
 def predict_profitability(features):
-    # Melakukan prediksi dengan model
-    profitability_prediction = random_forest_model.predict([features])
-    
-    # Menentukan kategori profitabilitas berdasarkan prediksi
-    if profitability_prediction[0] == 0:
-        profitability_category = 'low'
-    elif profitability_prediction[0] == 1:
-        profitability_category = 'medium'
-    else:
-        profitability_category = 'high'
-    
-    return profitability_category
+    if random_forest_model is None:
+        st.error("Model tidak dimuat. Tidak dapat melakukan prediksi.")
+        return None
+    try:
+        profitability_prediction = random_forest_model.predict([features])
+        if profitability_prediction[0] == 0:
+            return 'low'
+        elif profitability_prediction[0] == 1:
+            return 'medium'
+        else:
+            return 'high'
+    except Exception as e:
+        st.error(f"Kesalahan saat melakukan prediksi: {e}")
+        return None
 
 # Judul web
 st.title('Prediksi Profitabilitas Menu Restoran')
@@ -43,24 +45,15 @@ menu_category = st.number_input('Menu Category (Encoded)', min_value=0)
 ingredients = st.number_input('Ingredients (Encoded)', min_value=0)
 price = st.number_input('Price (Encoded and Standardized)', min_value=-3.0, max_value=3.0, step=0.01)
 
-# Inisialisasi variabel untuk prediksi
-profitability_prediction = ''
-
 # Membuat tombol untuk prediksi
 if st.button('Prediksi'):
     try:
-        # Convert input to appropriate data types
-        menu_item = int(menu_item)
-        menu_category = int(menu_category)
-        ingredients = int(ingredients)
-        price = float(price)
-
-        # Melakukan prediksi
-        profitability_prediction = predict_profitability([menu_item, menu_category, ingredients, price])
-
-        # Menentukan kategori profitabilitas berdasarkan prediksi
-        st.success(f'Profitabilitas: {profitability_prediction}')
-
+        features = [int(menu_item), int(menu_category), int(ingredients), float(price)]
+        profitability_prediction = predict_profitability(features)
+        if profitability_prediction:
+            st.success(f'Profitabilitas: {profitability_prediction}')
+        else:
+            st.error("Prediksi gagal.")
     except ValueError:
         st.error("Pastikan semua input diisi dengan angka yang valid.")
     except Exception as e:
