@@ -19,6 +19,12 @@ def load_model(filename):
 model_filename = 'RF_Restaurant.sav'
 random_forest_model = load_model(model_filename)
 
+# Debugging tambahan
+if random_forest_model is None:
+    st.error("Model tidak dimuat. Pastikan file model ada di lokasi yang benar dan tidak korup.")
+else:
+    st.success("Model berhasil dimuat.")
+
 # Fungsi untuk melakukan prediksi dan menentukan kategori profitabilitas
 def predict_profitability(features):
     if random_forest_model is None:
